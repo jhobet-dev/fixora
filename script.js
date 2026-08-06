@@ -40,56 +40,77 @@ ScrollTrigger.defaults({ scroller: document.body });
 ScrollTrigger.addEventListener('refresh', setBodyHeight);
 ScrollTrigger.refresh();
 
-/* ---------- 2. Three.js floating 3D toolkit behind the hero ---------- */
-const canvas = document.getElementById('hero-canvas');
+/* ---------- 2. Bold, full-page Three.js background (behind every section) ---------- */
+const canvas = document.getElementById('bg-canvas');
 const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+renderer.setClearColor(0x000000, 0);
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(50, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
-camera.position.z = 9;
+scene.fog = new THREE.FogExp2(0x0a1136, 0.028);
 
-function resizeHero() {
-  const hero = document.getElementById('hero');
-  const w = hero.clientWidth, h = hero.clientHeight;
+const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 100);
+camera.position.z = 11;
+
+function resizeBG() {
+  const w = window.innerWidth, h = window.innerHeight;
   renderer.setSize(w, h);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   camera.aspect = w / h;
   camera.updateProjectionMatrix();
 }
-resizeHero();
-window.addEventListener('resize', resizeHero);
+resizeBG();
+window.addEventListener('resize', resizeBG);
 
-const navyColor = new THREE.Color('#1E3A8A');
-const liteColor = new THREE.Color('#6B8AFF');
-const ambient = new THREE.AmbientLight(0xffffff, 0.9);
-const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+const ambient = new THREE.AmbientLight(0xffffff, 0.55);
+const dirLight = new THREE.DirectionalLight(0xffffff, 0.5);
 dirLight.position.set(4, 6, 8);
-scene.add(ambient, dirLight);
+const pointLight = new THREE.PointLight(0x6B8AFF, 3, 45);
+pointLight.position.set(0, 0, 6);
+scene.add(ambient, dirLight, pointLight);
+
+/* Brand palette used for bold, glowing shape colors */
+const palette = [0x6B8AFF, 0x10B981, 0xF59E0B, 0xADC8FF, 0xFFFFFF];
+
+/* Per-section accent colors — the point light lerps toward these as each section scrolls into view */
+const sectionColors = {
+  hero: 0x6B8AFF, how: 0x6B8AFF, services: 0x10B981,
+  why: 0xF59E0B, provider: 0xADC8FF, download: 0x10B981
+};
+const targetColor = new THREE.Color(sectionColors.hero);
 
 const shapeGeos = [
-  new THREE.IcosahedronGeometry(0.55, 0),
-  new THREE.OctahedronGeometry(0.5, 0),
-  new THREE.TorusGeometry(0.4, 0.14, 12, 30),
-  new THREE.BoxGeometry(0.7, 0.7, 0.7),
-  new THREE.ConeGeometry(0.45, 0.9, 6)
+  new THREE.IcosahedronGeometry(0.7, 0),
+  new THREE.OctahedronGeometry(0.65, 0),
+  new THREE.TorusGeometry(0.5, 0.18, 16, 40),
+  new THREE.TorusKnotGeometry(0.4, 0.13, 90, 12),
+  new THREE.BoxGeometry(0.85, 0.85, 0.85),
+  new THREE.ConeGeometry(0.55, 1.05, 7),
+  new THREE.DodecahedronGeometry(0.6, 0)
 ];
 
+const group = new THREE.Group();
+scene.add(group);
+
 const shapes = [];
-const shapeCount = 9;
+const shapeCount = 32;
 for (let i = 0; i < shapeCount; i++) {
   const geo = shapeGeos[i % shapeGeos.length];
-  const color = i % 2 === 0 ? navyColor : liteColor;
-  const mat = new THREE.MeshStandardMaterial({ color, roughness: 0.35, metalness: 0.15, transparent: true, opacity: 0.85 });
+  const color = palette[i % palette.length];
+  const mat = new THREE.MeshStandardMaterial({
+    color, emissive: color, emissiveIntensity: 0.4,
+    roughness: 0.3, metalness: 0.25, transparent: true, opacity: 0.9
+  });
   const mesh = new THREE.Mesh(geo, mat);
   mesh.position.set(
-    (Math.random() - 0.5) * 10,
-    (Math.random() - 0.5) * 6,
-    (Math.random() - 0.5) * 4 - 1
+    (Math.random() - 0.5) * 16,
+    (Math.random() - 0.5) * 34,   // tall vertical spread so shapes are visible all the way down the page
+    (Math.random() - 0.5) * 10 - 2
   );
-  mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
-  mesh.userData.speed = 0.15 + Math.random() * 0.25;
-  mesh.userData.float = 0.4 + Math.random() * 0.5;
+  mesh.scale.setScalar(0.6 + Math.random() * 1.1);
+  mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+  mesh.userData.speed = 0.2 + Math.random() * 0.4;
   mesh.userData.offset = Math.random() * Math.PI * 2;
-  scene.add(mesh);
+  mesh.userData.drift = 0.6 + Math.random() * 1.4;
+  group.add(mesh);
   shapes.push(mesh);
 }
 
@@ -99,34 +120,56 @@ window.addEventListener('pointermove', (e) => {
   mouseY = (e.clientY / window.innerHeight - 0.5);
 });
 
-const clock = new THREE.Clock();
-function animateHero() {
-  const t = clock.getElapsedTime();
-  shapes.forEach((m) => {
-    m.rotation.x += 0.0025 * m.userData.speed * 10 * 0.1;
-    m.rotation.y += 0.004 * m.userData.speed * 10 * 0.1;
-    m.position.y += Math.sin(t * m.userData.speed + m.userData.offset) * 0.0025;
-  });
-  camera.position.x += (mouseX * 1.2 - camera.position.x) * 0.04;
-  camera.position.y += (-mouseY * 1.2 - camera.position.y) * 0.04;
-  camera.lookAt(0, 0, 0);
-  renderer.render(scene, camera);
-  requestAnimationFrame(animateHero);
-}
-animateHero();
-
-/* Parallax hero scene + phone tilt tied to scroll */
+/* Merge scroll-progress tracking, per-section color targeting, and nav highlighting into one listener */
+let scrollProgress = 0;
+const secs = document.querySelectorAll('section[id]');
+const navAs = document.querySelectorAll('.nav-links a');
 ScrollTrigger.create({
-  trigger: '#hero',
+  trigger: document.body,
   start: 'top top',
-  end: 'bottom top',
-  scrub: true,
+  end: 'bottom bottom',
   onUpdate(self) {
-    scene.rotation.y = self.progress * 0.6;
-    scene.position.y = self.progress * 1.2;
+    scrollProgress = self.progress;
+    let cur = '';
+    secs.forEach(s => {
+      const rect = s.getBoundingClientRect();
+      if (rect.top < 140) cur = s.id;
+    });
+    if (sectionColors[cur] !== undefined) targetColor.set(sectionColors[cur]);
+    navAs.forEach(a => {
+      const active = a.getAttribute('href') === '#' + cur;
+      a.style.color = active ? '#091A7A' : '';
+      a.style.fontWeight = active ? '700' : '';
+    });
   }
 });
 
+const clock = new THREE.Clock();
+function animateBG() {
+  const t = clock.getElapsedTime();
+  shapes.forEach((m) => {
+    m.rotation.x += 0.004 * m.userData.speed * 10 * 0.1;
+    m.rotation.y += 0.007 * m.userData.speed * 10 * 0.1;
+    m.position.y += Math.sin(t * m.userData.speed + m.userData.offset) * 0.004 * m.userData.drift;
+  });
+  group.rotation.y = scrollProgress * Math.PI * 0.6 + t * 0.015;
+  group.position.y = -scrollProgress * 6;
+
+  pointLight.position.x = Math.sin(t * 0.3) * 5;
+  pointLight.position.y = Math.cos(t * 0.25) * 3;
+  pointLight.color.lerp(targetColor, 0.02);
+
+  camera.position.x += (mouseX * 1.6 - camera.position.x) * 0.04;
+  camera.position.y += (-mouseY * 1.6 - camera.position.y) * 0.04;
+  camera.position.z = 11 + Math.sin(t * 0.15) * 0.6;
+  camera.lookAt(0, 0, 0);
+
+  renderer.render(scene, camera);
+  requestAnimationFrame(animateBG);
+}
+animateBG();
+
+/* Phone mockup tilt (hero) */
 const phone = document.getElementById('phone3d');
 window.addEventListener('pointermove', (e) => {
   const rx = ((e.clientY / window.innerHeight) - 0.5) * -14;
@@ -172,27 +215,6 @@ gsap.fromTo('.dl-ph.p1', { rotateY: -40, y: 40, opacity: 0 }, {
 gsap.fromTo('.dl-ph.p2', { rotateY: 40, y: -40, opacity: 0 }, {
   rotateY: 14, y: 0, opacity: 1,
   scrollTrigger: { trigger: '#download', start: 'top 75%', end: 'top 30%', scrub: 1 }
-});
-
-/* Active nav highlight (adapted for lerp-scroll positions) */
-const secs = document.querySelectorAll('section[id]');
-const navAs = document.querySelectorAll('.nav-links a');
-ScrollTrigger.create({
-  trigger: document.body,
-  start: 'top top',
-  end: 'bottom bottom',
-  onUpdate() {
-    let cur = '';
-    secs.forEach(s => {
-      const rect = s.getBoundingClientRect();
-      if (rect.top < 140) cur = s.id;
-    });
-    navAs.forEach(a => {
-      const active = a.getAttribute('href') === '#' + cur;
-      a.style.color = active ? '#091A7A' : '';
-      a.style.fontWeight = active ? '700' : '';
-    });
-  }
 });
 
 /* Smooth in-page anchor scrolling that respects the lerp scroller */
