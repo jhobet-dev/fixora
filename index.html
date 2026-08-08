@@ -14,6 +14,15 @@
 
 <canvas id="bg-canvas"></canvas>
 
+<div id="video-bg">
+  <video class="bg-video active" data-key="hero"     autoplay muted loop playsinline preload="auto" src="https://assets.mixkit.co/videos/49024/49024-360.mp4"></video>
+  <video class="bg-video"        data-key="how"       muted loop playsinline preload="auto" src="https://assets.mixkit.co/videos/778/778-360.mp4"></video>
+  <video class="bg-video"        data-key="services"  muted loop playsinline preload="auto" src="https://assets.mixkit.co/videos/23491/23491-360.mp4"></video>
+  <video class="bg-video"        data-key="why"       muted loop playsinline preload="auto" src="https://assets.mixkit.co/videos/23243/23243-360.mp4"></video>
+  <video class="bg-video"        data-key="provider"  muted loop playsinline preload="auto" src="https://assets.mixkit.co/videos/32296/32296-360.mp4"></video>
+  <video class="bg-video"        data-key="download"  muted loop playsinline preload="auto" src="https://assets.mixkit.co/videos/31136/31136-360.mp4"></video>
+</div>
+
 <nav>
   <a class="nav-logo" href="#">
     <div class="logo-box">F</div>
@@ -37,13 +46,14 @@
 
 <!-- HERO -->
 <section id="hero">
-  <div class="hero-text">
-    <div class="hero-badge"><div class="dot"></div> Now available in the Philippines</div>
+  <div class="hero-scrim"></div>
+  <div class="hero-content">
+    <div class="hero-badge">Now available in the Philippines</div>
     <h1>Find <span>Skilled Workers</span><br>Near You — Instantly</h1>
     <p>Fixora connects you with verified, local service providers for your home, business, or any need. Browse, book, and track — all in one place.</p>
     <div class="hero-actions">
-      <a href="#" class="btn-hero btn-hero-primary">🔍 Find a Provider</a>
-      <a href="#how" class="btn-hero btn-hero-secondary">▶ How It Works</a>
+      <a href="#" class="btn-hero btn-hero-primary">Find a Provider</a>
+      <a href="#how" class="btn-hero btn-hero-secondary">How It Works</a>
     </div>
     <div class="hero-stats">
       <div class="stat"><strong>500+</strong><small>Verified Providers</small></div>
@@ -51,86 +61,9 @@
       <div class="stat"><strong>4.8★</strong><small>Average Rating</small></div>
     </div>
   </div>
-
-  <div class="hero-visual">
-    <div class="phone-stage">
-      <div class="phone-frame" id="phone3d">
-        <div class="phone-notch"></div>
-        <div class="phone-screen">
-          <div class="app-header">
-            <div style="display:flex;align-items:center;gap:8px;">
-              <div class="app-logo-box">F</div>
-              <div>
-                <div style="font-size:12px;font-weight:800;color:#091A7A;">FIXORA</div>
-                <div style="font-size:8px;color:#9CA3AF;">Find Skilled Workers</div>
-              </div>
-            </div>
-            <div class="app-bell">🔔</div>
-          </div>
-          <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;">
-            <span>📍</span>
-            <div>
-              <div style="font-size:8px;color:#9CA3AF;font-weight:600;">CURRENT LOCATION</div>
-              <div style="font-size:10px;font-weight:700;color:#091A7A;">Quezon City, Metro Manila</div>
-            </div>
-          </div>
-          <div class="app-search">🔍 Search by service or worker name...</div>
-          <div style="font-size:10px;font-weight:700;color:#091A7A;margin-bottom:7px;">Popular Services</div>
-          <div class="services-row">
-            <div class="s-chip"><span class="si">❄️</span>Aircon</div>
-            <div class="s-chip"><span class="si">🔧</span>Plumbing</div>
-            <div class="s-chip"><span class="si">⚡</span>Electrical</div>
-            <div class="s-chip"><span class="si">🧹</span>Cleaning</div>
-          </div>
-          <div style="font-size:10px;font-weight:700;color:#091A7A;margin-bottom:7px;">Nearby Skilled Workers</div>
-          <div class="map-box">
-            <svg width="100%" height="100%" viewBox="0 0 264 120" xmlns="http://www.w3.org/2000/svg">
-              <rect width="264" height="120" fill="#dce8ff"/>
-              <rect x="0" y="50" width="264" height="12" fill="#c8d9ff" opacity=".7"/>
-              <rect x="90" y="0" width="12" height="120" fill="#c8d9ff" opacity=".7"/>
-              <rect x="185" y="0" width="11" height="120" fill="#c8d9ff" opacity=".6"/>
-              <rect x="0" y="88" width="264" height="9" fill="#c8d9ff" opacity=".5"/>
-              <rect x="15" y="16" width="55" height="25" rx="4" fill="#b8ccf0" opacity=".5"/>
-              <rect x="110" y="16" width="55" height="25" rx="4" fill="#b8ccf0" opacity=".5"/>
-              <rect x="204" y="16" width="45" height="25" rx="4" fill="#b8ccf0" opacity=".4"/>
-              <rect x="15" y="68" width="55" height="18" rx="4" fill="#b8ccf0" opacity=".4"/>
-              <rect x="110" y="68" width="55" height="18" rx="4" fill="#b8ccf0" opacity=".4"/>
-            </svg>
-            <div style="position:absolute;top:16px;left:52px;font-size:20px;filter:drop-shadow(0 2px 4px rgba(9,26,122,0.3));">📍</div>
-            <div style="position:absolute;top:26px;left:128px;font-size:20px;filter:drop-shadow(0 2px 4px rgba(9,26,122,0.3));">📍</div>
-            <div style="position:absolute;top:48px;left:188px;font-size:20px;filter:drop-shadow(0 2px 4px rgba(9,26,122,0.3));">📍</div>
-            <div style="position:absolute;top:44px;left:38px;width:14px;height:14px;border-radius:50%;background:#3B82F6;border:3px solid #fff;box-shadow:0 0 0 5px rgba(59,130,246,0.25);"></div>
-          </div>
-          <div style="font-size:10px;font-weight:700;color:#091A7A;margin-bottom:7px;">Top Rated Workers</div>
-          <div class="worker-row">
-            <div class="w-avatar" style="background:#091A7A;">JD</div>
-            <div><div class="w-name">Juan Dela Cruz ✓</div><div class="w-job">Electrician</div></div>
-            <div class="w-rate">⭐ 4.9</div>
-          </div>
-          <div class="worker-row">
-            <div class="w-avatar" style="background:#10B981;">MR</div>
-            <div><div class="w-name">Maria Reyes</div><div class="w-job">House Cleaner</div></div>
-            <div class="w-rate">⭐ 4.8</div>
-          </div>
-        </div>
-      </div>
-      <div class="float-card fc1">
-        <span style="font-size:18px;">✅</span>
-        <div>
-          <div style="font-size:11px;">Booking Confirmed!</div>
-          <div style="font-size:10px;color:#6B7280;font-weight:400;">Provider on the way</div>
-        </div>
-      </div>
-      <div class="float-card fc2">
-        <span style="font-size:18px;">⭐</span>
-        <div>
-          <div style="font-size:11px;">4.9 / 5 Rating</div>
-          <div style="font-size:10px;color:#6B7280;font-weight:400;">1,200+ reviews</div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <a href="#how" class="hero-scroll-cue" aria-label="Scroll down"><span>⌄</span></a>
 </section>
+
 
 <!-- HOW IT WORKS -->
 <section id="how">
